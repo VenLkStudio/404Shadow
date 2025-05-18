@@ -14,7 +14,7 @@ def start():
             print(f"Error running ByeDPI: {str(e)}")
     elif platform.system() == 'Linux':
         bin_path = os.path.join(os.getcwd(), 'bin')
-        chmod = subprocess.Popen(['chmod', '+x', 'ciadpil'], cwd=bin_path, shell=True)
+        chmod = subprocess.Popen(['chmod', 'ugo+x', 'ciadpil'], cwd=bin_path, shell=True)
         chmod.wait()
         try:
             p = subprocess.Popen(['ciadpil', '--fake', '-1', '--ttl', '10', '--auto=ssl_err', '--fake', '-1', '--ttl', '5', '--hosts', ''], cwd=bin_path, shell=True)
