@@ -14,11 +14,7 @@ def start():
             print(f"Error running ByeDPI: {str(e)}")
     elif platform.system() == 'Linux':
         bin_path = os.path.join(os.getcwd(), 'bin')
-<<<<<<< HEAD
         chmod = subprocess.Popen(['chmod a+x ciadpil'], cwd=bin_path, shell=True)
-=======
-        chmod = subprocess.Popen(['chmod', 'u+x', 'ciadpil'], cwd=bin_path, shell=True)
->>>>>>> aaa8b5a (fix2)
         chmod.wait()
         try:
             p = subprocess.Popen(['./ciadpil', '--fake', '-1', '--ttl', '10', '--auto=ssl_err', '--fake', '-1', '--ttl', '5', '--hosts', '/list/list-youtube.txt'], cwd=bin_path, shell=True)
