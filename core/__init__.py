@@ -120,6 +120,25 @@ def ping_sites():
                 config_results[cmd] = successful_pings
                 print(f"Configuration (line {line_num}): {successful_pings} successful pings")
                 
+                # If we found a configuration with 25 successful pings, save it and exit
+                if successful_pings >= 25:
+                    settings = {
+                        "best_configurations": [{
+                            "config": cmd,
+                            "successful_pings": successful_pings,
+                            "line_number": line_num
+                        }],
+                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                    
+                    try:
+                        with open('settings.json', 'w') as f:
+                            json.dump(settings, f, indent=4)
+                        print("\nFound configuration with 25 successful pings! Results saved to settings.json")
+                    except Exception as e:
+                        print(f"Error saving to settings.json: {e}")
+                    return
+                
     elif platform.system() == 'Linux':
         with open('bin/proxy_cmds.txt', 'r') as proxy_file:
             for line_num, cmd in enumerate(proxy_file, 1):
@@ -152,32 +171,45 @@ def ping_sites():
                 
                 config_results[cmd] = successful_pings
                 print(f"Configuration (line {line_num}): {successful_pings} successful pings")
+                
+                # If we found a configuration with 25 successful pings, save it and exit
+                if successful_pings >= 25:
+                    settings = {
+                        "best_configurations": [{
+                            "config": cmd,
+                            "successful_pings": successful_pings,
+                            "line_number": line_num
+                        }],
+                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                    
+                    try:
+                        with open('settings.json', 'w') as f:
+                            json.dump(settings, f, indent=4)
+                        print("\nFound configuration with 25 successful pings! Results saved to settings.json")
+                    except Exception as e:
+                        print(f"Error saving to settings.json: {e}")
+                    return
     else:
         print('Error: Your OS is not supported')
         return
 
+    # If no configuration reached 25 pings, save the best one
     sorted_configs = sorted(config_results.items(), key=lambda x: x[1], reverse=True)
-    
-    print("\n=== Best Configurations ===")
-    for config, pings in sorted_configs:
-        line_num = config_lines[config]
-        print(f"Config (line {line_num}): {config} - {pings} successful pings")
-    
-    settings = {
-        "best_configurations": [
-            {
-                "config": config,
-                "successful_pings": pings,
-                "line_number": config_lines[config]
-            }
-            for config, pings in sorted_configs
-        ],
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-    }
-    
-    try:
-        with open('settings.json', 'w') as f:
-            json.dump(settings, f, indent=4)
-        print("\nResults saved to settings.json")
-    except Exception as e:
-        print(f"Error saving to settings.json: {e}")
+    if sorted_configs:
+        best_config = sorted_configs[0]
+        settings = {
+            "best_configurations": [{
+                "config": best_config[0],
+                "successful_pings": best_config[1],
+                "line_number": config_lines[best_config[0]]
+            }],
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        try:
+            with open('settings.json', 'w') as f:
+                json.dump(settings, f, indent=4)
+            print("\nResults saved to settings.json")
+        except Exception as e:
+            print(f"Error saving to settings.json: {e}")
