@@ -1,6 +1,7 @@
-import core
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QVBoxLayout, QWidget
 
-# core.start(1)
-core.ping_sites()
-core.start()
-# core.start_test(3)
+import gui.main_window
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()

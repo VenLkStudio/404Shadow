@@ -80,7 +80,7 @@ def createConfig():
 def start_test(id):
     print(core.configs.get_config(id))
 
-def ping_sites():
+def ping_sites(stop_event=None):
     bin_path = os.path.join(os.getcwd(), 'bin')
     config_results = defaultdict(int)
     config_lines = {}
@@ -88,6 +88,10 @@ def ping_sites():
     if platform.system() == 'Windows':
         with open('bin/proxy_cmds.txt', 'r') as proxy_file:
             for line_num, cmd in enumerate(proxy_file, 1):
+                if stop_event and stop_event.is_set():
+                    print("Testing stopped by user")
+                    return
+                    
                 cmd = cmd.strip()
                 if not cmd:
                     continue
@@ -103,6 +107,11 @@ def ping_sites():
                 try:
                     with open('bin/test_sites.txt', 'r') as sites_file:
                         for site in sites_file:
+                            if stop_event and stop_event.is_set():
+                                t.stop()
+                                print("Testing stopped by user")
+                                return
+                                
                             site = site.strip()
                             if not site:
                                 continue
@@ -142,6 +151,10 @@ def ping_sites():
     elif platform.system() == 'Linux':
         with open('bin/proxy_cmds.txt', 'r') as proxy_file:
             for line_num, cmd in enumerate(proxy_file, 1):
+                if stop_event and stop_event.is_set():
+                    print("Testing stopped by user")
+                    return
+                    
                 cmd = cmd.strip()
                 if not cmd:
                     continue
@@ -156,6 +169,11 @@ def ping_sites():
                 try:
                     with open('bin/test_sites.txt', 'r') as sites_file:
                         for site in sites_file:
+                            if stop_event and stop_event.is_set():
+                                t.stop()
+                                print("Testing stopped by user")
+                                return
+                                
                             site = site.strip()
                             if not site:
                                 continue
